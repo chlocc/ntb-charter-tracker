@@ -27,9 +27,13 @@ method, sourcing rules, and output format. Work in this order:
    "Last updated" date here unless the user runs `/rebaseline` — leave the diff baseline
    intact so the digest stays meaningful (the changelog records the run date).
 
-4. **Regenerate the page.** Update `index.html` to match the new data. Preserve the existing
-   visual system and structure — edit content, not styling. Every new/changed cell must carry
-   a source hyperlink; keep APPROX. notes and conditions blocks.
+4. **Regenerate the page.** Edit `index.source.html` (the plaintext source) to match the new
+   data. NEVER edit `index.html` directly — it is the encrypted build and is not human-readable.
+   Preserve the existing visual system and structure — edit content, not styling. Every
+   new/changed cell must carry a source hyperlink; keep APPROX. notes and conditions blocks.
+   Then rebuild the encrypted page: run `NTB_PASSWORD='<gate password>' node encrypt.js`
+   (the operator/scheduled task supplies the password via the env var; it is never stored in
+   this repo). This regenerates `index.html` from `index.source.html`.
 
 5. **Changelog.** Append a dated entry to `CHANGELOG.md` (create it if missing) summarizing
    what changed this run, each item with a source link — or "No material changes" if nothing
