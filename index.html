@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>National Trust Bank Charter Applications — Survey</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#161c24; --panel2:#1b2531; --line:#2a3644;
+    --ink:#e8edf2; --muted:#9aa7b4; --faint:#6b7885;
+    --approved:#3fb27f; --cond:#4a9fd8; --pending:#d9a441; --denied:#e0655f; --denovo:#9b8cce;
+    --link:#5cb3e8; --approx:#e0a13a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1680px;margin:0 auto;padding:32px 24px 80px;}
+  header.top{border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:22px;}
+  h1{font-size:23px;margin:0 0 6px;letter-spacing:-.2px;}
+  .sub{color:var(--muted);font-size:13px;max-width:940px;}
+  .meta{color:var(--faint);font-size:12px;margin-top:10px;}
+  .meta b{color:var(--muted);}
+  a{color:var(--link);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .stats{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 20px;}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 16px;min-width:112px;}
+  .stat .n{font-size:21px;font-weight:600;}
+  .stat .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+  h2{font-size:15px;margin:32px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;}
+  h2 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);}
+  table{border-collapse:collapse;width:100%;min-width:1560px;}
+  th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);
+    padding:10px 12px;border-bottom:1px solid var(--line);background:var(--panel2);position:sticky;top:0;z-index:2;}
+  td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:12.5px;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,.015);}
+  .co{font-weight:600;font-size:13px;}
+  .ent{color:var(--faint);font-size:11px;margin-top:3px;font-style:italic;line-height:1.35;}
+  .badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;}
+  .b-approved{background:rgba(63,178,127,.15);color:var(--approved);border:1px solid rgba(63,178,127,.35);}
+  .b-cond{background:rgba(74,159,216,.15);color:var(--cond);border:1px solid rgba(74,159,216,.35);}
+  .b-pending{background:rgba(217,164,65,.15);color:var(--pending);border:1px solid rgba(217,164,65,.35);}
+  .b-denied{background:rgba(224,101,95,.15);color:var(--denied);border:1px solid rgba(224,101,95,.35);}
+  .b-denovo{background:rgba(155,140,206,.15);color:var(--denovo);border:1px solid rgba(155,140,206,.35);}
+  .sub-tag{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:5px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted);white-space:nowrap;}
+  .sub-conv{color:#d0a9e0;border-color:rgba(155,140,206,.4);background:rgba(155,140,206,.1);}
+  .date{font-weight:600;font-size:12.5px;white-space:nowrap;}
+  .approx{display:inline-block;margin-top:4px;font-size:9.5px;font-weight:700;color:var(--approx);background:rgba(224,161,58,.12);border:1px solid rgba(224,161,58,.4);border-radius:4px;padding:1px 5px;text-transform:uppercase;letter-spacing:.3px;}
+  .exact{display:inline-block;margin-top:4px;font-size:9.5px;color:var(--faint);}
+  .whynote{display:block;margin-top:6px;font-size:10.5px;color:var(--muted);line-height:1.4;}
+  .whynote b{color:var(--approx);}
+  .acts{margin:0;padding:0;list-style:none;}
+  .acts li{position:relative;padding-left:12px;margin-bottom:6px;line-height:1.42;color:var(--ink);}
+  .acts li:last-child{margin-bottom:0;}
+  .acts li:before{content:"\25B8";position:absolute;left:0;top:0;color:var(--faint);font-size:9px;}
+  .acts .q{color:#c7d3de;}
+  .srcnote{color:var(--faint);font-size:10.5px;font-style:italic;display:block;margin-top:2px;}
+  .warn{color:var(--approx);font-weight:600;}
+  .road{color:var(--muted);font-size:12px;line-height:1.45;}
+  .flag{color:var(--denied);font-weight:600;}
+  .oppo{color:var(--pending);font-weight:600;}
+  .conds{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px;}
+  .conds .h{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--faint);font-weight:700;margin-bottom:4px;}
+  .conds .h a{font-weight:700;}
+  .conds ul{margin:0;padding:0;list-style:none;}
+  .conds li{position:relative;padding-left:11px;margin-bottom:4px;line-height:1.38;color:var(--faint);font-size:11px;}
+  .conds li:last-child{margin-bottom:0;}
+  .conds li:before{content:"\2013";position:absolute;left:0;top:0;}
+  .conds b{color:var(--muted);}
+  .note{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--pending);border-radius:8px;padding:13px 18px;margin:18px 0;color:var(--muted);font-size:12.5px;line-height:1.5;}
+  .note b{color:var(--ink);}
+  .note.blue{border-left-color:var(--cond);}
+  footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);color:var(--faint);font-size:12px;line-height:1.6;}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin:8px 0 0;font-size:11.5px;color:var(--muted);}
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .sw{width:10px;height:10px;border-radius:50%;display:inline-block;}
+  col.c-co{width:10%;} col.c-sub{width:6.5%;} col.c-act{width:25%;}
+  col.c-rec{width:10%;} col.c-time{width:12%;} col.c-stat{width:5.5%;} col.c-road{width:23%;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>U.S. National Trust Bank Charter Applications — State of Play</h1>
+  <div class="sub">A survey of pending, approved, and denied national trust bank (NTB) charter applications before the Office of the Comptroller of the Currency (OCC), compiled from public information. Fintechs and digital-asset firms have surged toward the NTB charter — a federal pathway for custody and (under the GENIUS Act) stablecoin activity that eases state-by-state oversight, though trust banks cannot lend or take deposits. Proposed-activities detail and conditions are drawn from each entity's OCC decision letter or application filing; every point is hyperlinked to its source.</div>
+  <div class="meta">Fourth draft &middot; Compiled July 24, 2026 &middot; Sourced to OCC corporate decision letters, application public volumes, the OCC Corporate Applications Search (CATS/CAS), and comment letters (ICBA/BPI/NCRC). &middot; <b>Receipt dates flagged EXACT vs. APPROX., each APPROX. with a note on why it can't be pinned; conditions elaborated with the source letter cited.</b></div>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--approved)"></i>Final approval</span>
+    <span><i class="sw" style="background:var(--cond)"></i>Conditional approval</span>
+    <span><i class="sw" style="background:var(--pending)"></i>Pending review</span>
+    <span><i class="sw" style="background:var(--denied)"></i>Denied</span>
+    <span><i class="sw" style="background:var(--denovo)"></i>De novo / full bank (context)</span>
+  </div>
+</header>
+
+<div class="note blue">
+  <b>Why some receipt dates are "APPROX."</b> An OCC corporate decision letter states the <b>decision</b> date and the OCC control number, but usually not the application <b>receipt</b> date. A firm receipt date comes from one of three places: (1) the "Date Received" column of the OCC's <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/index-digital-assets-licensing-applications.html">Digital Assets Licensing Applications index</a>; (2) the date stamped on the application document in the public volume; or (3) a decision letter that happens to recite "On&nbsp;[date],&nbsp;[applicant]&nbsp;filed…" (as BitGo's and Paxos's letters do). For four applicants — <b>Fidelity, Crypto.com, Bridge, and Laser Digital</b> — none of those yields a date, so the value is inferred from the OCC control-number filing year plus the press announcement date (which is the <i>announcement</i>, not the OCC's receipt). To make any of these exact, pull that applicant's <a href="https://apps.occ.gov/CAAS_CATS/">OCC Corporate Applications Search (CAS)</a> record by filing ID — the same source that pins Wise to June 16, 2025 — or the OCC weekly bulletin's "applications received" listing for the relevant week. Those are query interfaces, not static pages, so they weren't captured in the research pass.
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="n">20</div><div class="l">NTB applicants tracked</div></div>
+  <div class="stat"><div class="n">1</div><div class="l">Final approval</div></div>
+  <div class="stat"><div class="n">9</div><div class="l">Conditional approval</div></div>
+  <div class="stat"><div class="n">9</div><div class="l">Pending review</div></div>
+  <div class="stat"><div class="n">1</div><div class="l">Denied</div></div>
+</div>
+
+<!-- APPROVED / CONDITIONAL -->
+<h2><span class="dot" style="background:var(--cond)"></span>Approved &amp; Conditionally Approved</h2>
+<div class="tablewrap">
+<table>
+  <colgroup><col class="c-co"><col class="c-sub"><col class="c-act"><col class="c-rec"><col class="c-time"><col class="c-stat"><col class="c-road"></colgroup>
+  <thead><tr>
+    <th>Company / entity</th><th>Charter subtype</th><th>Proposed activities (sourced)</th><th>OCC receipt date</th><th>Key dates &amp; OCC decision</th><th>Status</th><th>Conditions · roadblocks · opposition (sourced)</th>
+  </tr></thead>
+  <tbody>
+
+  <tr>
+    <td><div class="co">Circle</div><div class="ent">First National Digital Currency Bank, N.A. (Charter #25361)</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Manage the reserve of liquid assets backing USDC <span class="q">"on a directed basis"</span> — USDC itself is issued by an affiliated NY trust company, <b>not the bank</b>. <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125a.pdf">OCC letter</a></li>
+      <li>Perform collateral-trustee services <span class="q">"for the benefit of USDC holders on a fiduciary basis"</span> (12 USC 92a / 12 CFR 9). <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125a.pdf">OCC letter</a></li>
+      <li>Provide digital-asset custody <span class="q">"for its affiliates on a fiduciary basis."</span> <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125a.pdf">OCC letter</a></li>
+      <li><span class="warn">Not in the OCC letter:</span> "ministerial / HQLA-minimal-market-risk," "bankruptcy-remote," "exclusively to affiliates initially," and redemption mechanics are Circle's framing / GENIUS-Act context (<a href="https://www.businesswire.com/news/home/20260710400969/en/Circle-Receives-Final-OCC-Approval-to-Establish-National-Trust-Bank">Circle release</a>), not the decision letter.</li>
+    </ul></td>
+    <td><span class="date">June 30, 2025</span><br><span class="exact">exact (press)</span></td>
+    <td>Filed 6/30/25 → conditional <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125.html">12/12/25</a> → <b>final approval <a href="https://www.businesswire.com/news/home/20260710400969/en/Circle-Receives-Final-OCC-Approval-to-Establish-National-Trust-Bank">July 10, 2026</a></b>. Not yet open.</td>
+    <td><span class="badge b-approved">Final</span></td>
+    <td class="road"><span class="oppo">Opposition:</span> <a href="https://www.icba.org/w/icba-opposes-circle-s-application-for-a-national-trust-bank-charter">ICBA</a>.
+      <div class="conds"><div class="h">Conditions — per <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125a.pdf">OCC decision letter (NR 2025-125a)</a></div><ul>
+        <li>Activities limited to those in the approved business plan (trust/fiduciary only)</li>
+        <li>Conform, cease, or divest the collateral-trustee structure to comply with the <b>GENIUS Act</b> (12 USC 5901 et seq.)</li>
+        <li>60-day advance notice of any significant business-plan deviation</li>
+        <li>Minimum <b>$6.05M Tier 1 capital</b>, ≥50% in eligible liquid assets</li>
+        <li>Maintain ≥180 days of operating expenses in liquid assets</li>
+        <li>OCC prior no-objection for senior executive officers/directors (first 3 yrs)</li>
+        <li>Engage an independent external auditor; standard pre-opening items (e.g., fidelity bond)</li>
+      </ul></div></td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Ripple</div><div class="ent">Ripple National Trust Bank</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Manage a <span class="q">"segregated reserve of liquid assets underlying RLUSD…on a directed basis"</span> — RLUSD is issued by affiliate Standard Custody &amp; Trust Co., not the bank. <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125b.pdf">OCC letter</a></li>
+      <li>Collateral-trustee services <span class="q">"for the benefit of RLUSD holders on a fiduciary basis."</span> <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125b.pdf">OCC letter</a></li>
+      <li>Cryptocurrency custody <span class="q">"to affiliates and unaffiliated institutional customers on a fiduciary basis"</span> — third-party institutional custody, unlike Circle. <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125b.pdf">OCC letter</a></li>
+      <li>Bank does not plan to issue stablecoins. <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125b.pdf">OCC letter</a></li>
+    </ul></td>
+    <td><span class="date">July 2, 2025</span><br><span class="exact">exact (press)</span></td>
+    <td>Filed 7/2/25 → conditional <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125b.pdf">12/12/25</a>. Activate within 18 mo (~June 2027).</td>
+    <td><span class="badge b-cond">Conditional</span></td>
+    <td class="road"><span class="flag">Note:</span> still conditional, <b><a href="https://247wallst.com/investing/2026/04/03/xrp-news-ripples-national-trust-bank-status-just-went-live-could-this-fast-track-xrp-adoption/">not operational</a></b> as of Apr 2026. <span class="oppo">Opposition:</span> <a href="https://www.icba.org/newsroom/news-and-articles/2025/08/06/icba-opposes-ripple-s-application-for-a-national-trust-bank-charter">ICBA (Aug 6 '25)</a>, <a href="https://ncrc.org/ncrc-continues-opposition-to-national-trust-bank-charters-for-stablecoin-issuers-with-comment-on-ripple-charter-application/">NCRC</a>.
+      <div class="conds"><div class="h">Conditions (3-yr period) — per <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125b.pdf">OCC letter (NR 2025-125b)</a></div><ul>
+        <li>Activities limited to trust/fiduciary per business plan</li>
+        <li>GENIUS Act compliance for stablecoin-related activity</li>
+        <li>60-day notice of significant business-plan deviations</li>
+        <li>Minimum <b>$11.7M Tier 1 capital</b> (with liquid-asset allocation)</li>
+        <li>≥180 days of operating expenses in liquid assets</li>
+        <li>OCC prior no-objection for senior officers/directors</li>
+      </ul></div></td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Paxos</div><div class="ent">Paxos Trust Company, N.A. <span style="color:var(--approx)">(not "Paxos National Trust")</span></div></td>
+    <td><span class="sub-tag sub-conv">Conversion — NY (NYDFS)</span></td>
+    <td><ul class="acts">
+      <li><span class="q">"U.S. dollar-backed stablecoin issuance; gold-backed digital asset issuance."</span> <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125e.pdf">OCC letter</a></li>
+      <li>Custody of <span class="q">"crypto-assets, fiat currency, securities, and commodities on a fiduciary basis,"</span> plus non-fiduciary custody/safekeeping. <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125e.pdf">OCC letter</a></li>
+      <li>Escrow, fiduciary/payment/exchange-agent services; crypto exchange, brokerage &amp; trade facilitation tied to custody accounts. <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125e.pdf">OCC letter</a></li>
+    </ul></td>
+    <td><span class="date">Aug 12, 2025</span><br><span class="exact">exact — letter recites "On August 12, 2025, PTC filed…"</span></td>
+    <td>Filed 8/12/25 → conditional <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125e.pdf">12/12/25</a>. Converting from NY state trust.</td>
+    <td><span class="badge b-cond">Conditional</span></td>
+    <td class="road"><span class="oppo">Opposition:</span> general <a href="https://bpi.com/bpi-statement-on-occs-conditional-approval-of-five-national-trust-bank-charter-applications/">BPI</a>/ICBA cohort.
+      <div class="conds"><div class="h">Conditions (3-yr period) — per <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125e.pdf">OCC letter (NR 2025-125e)</a></div><ul>
+        <li>Activities limited to trust-company activities and related services</li>
+        <li>Conform stablecoin issuance to the GENIUS Act</li>
+        <li><b>OCC written "no objection" required before offering/marketing/issuing USDG (Global Dollar)</b></li>
+        <li>60-day notice of significant business-plan deviations</li>
+        <li>Minimum <b>$15M Tier 1 capital</b> with liquidity requirements</li>
+        <li>≥180 days of operating expenses in liquid assets</li>
+        <li><b>Compliance investment: $7.25M (2026) and $8.5M (2027)</b></li>
+        <li>OCC prior no-objection for senior officers/directors</li>
+      </ul></div></td>
+  </tr>
+
+  <tr>
+    <td><div class="co">BitGo</div><div class="ent">BitGo Bank &amp; Trust, N.A. (Charter #25366)</div></td>
+    <td><span class="sub-tag sub-conv">Conversion — S. Dakota</span></td>
+    <td><ul class="acts">
+      <li><span class="q">"Digital asset and fiat currency fiduciary custody"</span> plus ancillary settlement &amp; clearing, wallet-platform, transfer, and key-management services. <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125c.pdf">OCC letter</a></li>
+      <li>Staking services; escrow services (fiduciary capacity). <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125c.pdf">OCC letter</a></li>
+      <li><span class="q">"Stablecoin issuance services"</span> — a USD-backed stablecoin (permissible under 12 USC 27(a)). <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125c.pdf">OCC letter</a></li>
+    </ul></td>
+    <td><span class="date">July 14, 2025</span><br><span class="exact">exact — letter recites "On July 14, 2025, BitGo Trust…filed"</span></td>
+    <td>Filed 7/14/25 → conditional <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125c.pdf">12/12/25</a>. Converting from SD state trust.</td>
+    <td><span class="badge b-cond">Conditional</span></td>
+    <td class="road"><span class="oppo">Opposition:</span> general <a href="https://www.bankingdive.com/news/trade-groups-push-back-on-crypto-firms-bank-charter-pursuit/753861/">trade-group</a> pushback.
+      <div class="conds"><div class="h">Conditions (3-yr period) — per <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125c.pdf">OCC letter (NR 2025-125c)</a></div><ul>
+        <li>Activities limited to trust-company activities</li>
+        <li><span class="flag">Roadblock:</span> divest any digital assets received on-balance-sheet <b>"as soon as practicable and no longer than one business day"</b> after receipt; <b>2-year conformance</b> for nonconforming assets</li>
+        <li>Conform stablecoin issuance to the GENIUS Act</li>
+        <li>60-day notice of significant business-plan deviations</li>
+        <li>Minimum <b>$8.7M Tier 1 capital</b>, ≥50% in eligible liquid assets</li>
+        <li>≥180 days of operating expenses in liquid assets</li>
+        <li>OCC prior no-objection for senior officers/directors</li>
+      </ul></div></td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Fidelity Digital Assets</div><div class="ent">Fidelity Digital Assets, N.A. (converting FDAS, LLC; office → Boston)</div></td>
+    <td><span class="sub-tag sub-conv">Conversion — NY (NYDFS)</span></td>
+    <td><ul class="acts">
+      <li>Crypto custody &amp; trade-execution on a <b>non-fiduciary</b> basis: custodial accounts, asset transfers, custodial cash, trade execution, IRA services, settlement-as-a-service, collateral-agency, reporting. <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125d.pdf">OCC letter</a></li>
+      <li>Intends to <b>issue its own stablecoin</b> and provide staking — both non-fiduciary. <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125d.pdf">OCC letter</a></li>
+      <li>Asset management for affiliates on a <b>fiduciary</b> basis (with investment discretion). <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125d.pdf">OCC letter</a></li>
+      <li>Clients: U.S. retail + U.S./foreign institutional investors. <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125d.pdf">OCC letter</a></li>
+    </ul></td>
+    <td><span class="date">~Fall 2025</span><br><span class="approx">APPROX. — verify</span>
+      <span class="whynote"><b>Why unpinned:</b> its conversion letter (125d) — unlike BitGo's and Paxos's — omits any "On [date]…filed" line, no press or law-firm alert states one, and there is no separate public application volume. Estimate is inferred only from its place in the Dec 12 batch and its higher OCC control-number series (343796/343797). Pull its <a href="https://apps.occ.gov/CAAS_CATS/">CAS</a> record to confirm.</span></td>
+    <td>Filed ~fall 2025 → conditional <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125d.pdf">12/12/25</a>. Conversion + temporary bank + merger.</td>
+    <td><span class="badge b-cond">Conditional</span></td>
+    <td class="road"><span class="oppo">Opposition:</span> general BPI/ICBA cohort. Counsel: <a href="https://www.sidley.com/en/newslanding/newsannouncements/2025/12/sidley-represents-fmr-llc-in-obtaining-occ-approval-for-fidelity-digital-assets-national-association">Sidley</a>.
+      <div class="conds"><div class="h">Conditions (8 total) — per <a href="https://www.occ.gov/news-issuances/news-releases/2025/nr-occ-2025-125d.pdf">OCC letter (NR 2025-125d)</a></div><ul>
+        <li>Merger-timing requirements (conversion + temporary bank + merger sequence)</li>
+        <li>Activities limited to those in the approved business plan</li>
+        <li>Stablecoin issuance subject to OCC pre-approval / GENIUS Act</li>
+        <li>Minimum <b>$25M Tier 1 capital</b>, ≥50% in eligible liquid assets</li>
+        <li>≥180 days of operating expenses in liquid assets</li>
+        <li>OCC prior no-objection for senior officers/directors</li>
+        <li>Independent external audit</li>
+      </ul></div></td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Coinbase</div><div class="ent">Coinbase National Trust Company</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Digital-asset + fiat custody <span class="q">"as a fiduciary, primarily for institutional clients"</span>; migrate custody business from Coinbase Custody Trust Co. over the 3-yr de novo period. <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1370.pdf">CD #1370</a></li>
+      <li>Transfer/settlement offered <span class="q">"only to custody customers and relate only to custodied assets."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1370.pdf">CD #1370</a></li>
+      <li>Staking, Prime Trading, Prime Financing — bank acts only as a <b>"finder"</b> to Coinbase affiliates; <span class="q">"will not be providing the underlying…services itself."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1370.pdf">CD #1370</a></li>
+      <li>Does <b>not</b> propose to issue stablecoins. <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1370.pdf">CD #1370</a></li>
+    </ul></td>
+    <td><span class="date">Oct 3, 2025</span><br><span class="exact">exact — application public volume dated 10/03/2025 (<a href="https://www.occ.treas.gov/topics/charters-and-licensing/digital-assets-licensing-applications/coinbase-national-trust-company.pdf">OCC vol.</a>)</span></td>
+    <td>Filed 10/3/25 → conditional <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1370.pdf">Apr 2, 2026 (CD #1370)</a>.</td>
+    <td><span class="badge b-cond">Conditional</span></td>
+    <td class="road"><span class="oppo">Opposition:</span> <a href="https://www.icba.org/w/icba-opposes-occ-approval-of-coinbase-s-national-trust-bank-charter-application">ICBA</a>; <a href="https://bpi.com/wp-content/uploads/2025/11/BPI-comment-letter-re-Coinbase-NTB-Application-11-3-25.pdf">BPI (Nov 3 '25)</a>. <a href="https://www.americanbanker.com/news/coinbase-receives-conditional-approval-for-occ-trust-charter">American Banker</a>.
+      <div class="conds"><div class="h">Conditions — per <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1370.pdf">Corporate Decision #1370</a></div><ul>
+        <li>Activities limited to trust/fiduciary business per business plan</li>
+        <li>60-day advance notice of significant business-plan deviations</li>
+        <li>Minimum <b>$60M Tier 1 capital</b> (highest in the cohort)</li>
+        <li>≥180 days of operating expenses in liquid assets</li>
+        <li>OCC prior no-objection for senior officers/directors</li>
+        <li>Independent external audit; <b>robust BSA/OFAC compliance program</b></li>
+        <li>Pass a pre-opening OCC examination before final approval</li>
+      </ul></div></td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Crypto.com</div><div class="ent">Foris DAX National Trust Bank, d/b/a Crypto.com National Trust Bank</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Digital-asset &amp; USD custody <span class="q">"to affiliates and nonaffiliates in a fiduciary capacity,"</span> plus non-fiduciary custody/safekeeping. <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-actions/2026/cd1367.pdf">CD #1367</a></li>
+      <li>Clients: institutions, asset managers, corporate treasuries, ETF/ETP sponsors, prop traders + <span class="q">"retail clients located in New York and Illinois, at least initially."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-actions/2026/cd1367.pdf">CD #1367</a></li>
+      <li>Optional trade settlement; staking (network validation); customer-directed exchange <span class="q">"on a riskless principal basis."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-actions/2026/cd1367.pdf">CD #1367</a></li>
+      <li>No stablecoin issuance (may receive stablecoins as payment). <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-actions/2026/cd1367.pdf">CD #1367</a></li>
+    </ul></td>
+    <td><span class="date">~Oct 2025</span><br><span class="approx">APPROX. — verify</span>
+      <span class="whynote"><b>Why unpinned:</b> no public application volume with a document date, and CD #1367 omits the receipt date. Inferred from control number <b>2025-Charter-343659</b> (a 2025 filing) and comment-letter dates (BPI Nov 26, NCRC Nov 25 → published notice ~late Oct). Pull the <a href="https://apps.occ.gov/CAAS_CATS/">CAS</a> record to confirm.</span></td>
+    <td>Filed ~Oct 2025 → conditional <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-actions/2026/cd1367.pdf">Feb 20, 2026 (CD #1367)</a>.</td>
+    <td><span class="badge b-cond">Conditional</span></td>
+    <td class="road"><span class="oppo">Opposition:</span> <a href="https://ncrc.org/ncrc-comment-in-opposition-to-crypto-coms-national-trust-charter-application/">NCRC (Nov 25 '25)</a>; <a href="https://bpi.com/wp-content/uploads/2026/04/BPI-comment-letter-Foris-crypto.com-11-26-25.pdf">BPI (Nov 26 '25)</a>; <a href="https://www.icba.org/web/payments/w/occ-approves-icba-opposed-national-trust-charter-applications">ICBA</a>.
+      <div class="conds"><div class="h">Conditions — per <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-actions/2026/cd1367.pdf">Corporate Decision #1367</a></div><ul>
+        <li>Activities limited to trust-company activities (digital-asset custody &amp; staking permitted; fiduciary powers under 12 USC 92a)</li>
+        <li>60-day notice of significant business-plan deviations</li>
+        <li>Minimum <b>$15M Tier 1 capital</b> + liquidity requirements</li>
+        <li>≥180 days of operating expenses in liquid assets</li>
+        <li>OCC vetting of board/executives; BSA/OFAC program; information-systems security assessment</li>
+        <li><b>Capital raised within 12 months and bank opened within 18 months, or the approval expires</b></li>
+      </ul></div></td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Stripe / Bridge</div><div class="ent">Bridge National Trust Bank (organizer: Bridge Ventures LLC)</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Digital-asset custody <span class="q">"as a fiduciary, primarily to retail customers located outside of New York"</span> (also affiliates/certain institutions); custody read to include processing, settlement, fund administration. <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1365.pdf">CD #1365</a></li>
+      <li>"Orchestration" — riskless-principal crypto purchase/sale/conversion for custody customers. <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1365.pdf">CD #1365</a></li>
+      <li><b>Stablecoin issuance</b> — <span class="q">"becoming the primary issuer of xUSD"</span> (only one in the cohort approved to issue). <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1365.pdf">CD #1365</a></li>
+      <li>Reserve management for stablecoin issuers (affiliated + non-affiliated) + collateral-trustee for stablecoin holders on a fiduciary basis. <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1365.pdf">CD #1365</a></li>
+    </ul></td>
+    <td><span class="date">~Oct 15, 2025</span><br><span class="approx">APPROX. — verify</span>
+      <span class="whynote"><b>Why unpinned:</b> co-founder publicly said it was filed ~Oct 14/15, 2025 (an <i>announcement</i>, not a confirmed OCC "date received"); there's a regulations.gov docket (OCC-2025-0603) but CD #1365 omits the receipt date. Pull the <a href="https://apps.occ.gov/CAAS_CATS/">CAS</a> record to confirm.</span></td>
+    <td>Filed ~10/15/25 → conditional <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1365.pdf">Feb 12, 2026 (CD #1365)</a>.</td>
+    <td><span class="badge b-cond">Conditional</span></td>
+    <td class="road"><span class="oppo">Opposition:</span> <a href="https://bpi.com/wp-content/uploads/2025/11/BPI-comment-letter-re-Bridge-Stripe-NTB-Charter-Application-11-13-25vfinalforsubmission.pdf">BPI (Nov 13 '25)</a>; <a href="https://www.pymnts.com/cryptocurrency/2025/4-organizations-oppose-stripe-application-national-trust-bank-charter">coalition of 4</a>; ICBA. <a href="https://www.bankingdive.com/news/stripe-bridge-occ-conditional-approval-national-trust-bank-charter/812417/">Banking Dive</a>.
+      <div class="conds"><div class="h">Conditions — per <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1365.pdf">Corporate Decision #1365</a></div><ul>
+        <li>Activities limited to trust-company activities</li>
+        <li><b>GENIUS Act compliance for stablecoin (xUSD) issuance</b></li>
+        <li>60-day notice of significant business-plan deviations</li>
+        <li>Minimum <b>$45M Tier 1 capital</b> (with <b>$27.5M in liquid assets</b>)</li>
+        <li>≥180 days of operating expenses in reserve; adopt a Capital Adequacy &amp; Liquidity Management Policy</li>
+        <li>OCC prior no-objection for officers/directors; independent external auditor</li>
+        <li>BSA/OFAC program; information-security program</li>
+      </ul></div></td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Morgan Stanley</div><div class="ent">Morgan Stanley Digital Trust, N.A. (MSDTNA)</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Custody of certain digital assets + <span class="q">"purchase, sale, swap and transfer of digital assets to support client investment activities."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1378.pdf">CD #1378</a></li>
+      <li>Facilitate <span class="q">"staking of digital assets on a fiduciary basis."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1378.pdf">CD #1378</a></li>
+      <li>Act as <b>collateral administrator</b> to support an affiliate's digital-asset lending — supports, does not itself make, the loans. <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1378.pdf">CD #1378</a></li>
+      <li>Serves Morgan Stanley Wealth Management clients. No stablecoin issuance, reserve mgmt, FX, or tokenization. <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1378.pdf">CD #1378</a></li>
+    </ul></td>
+    <td><span class="date">Feb 18, 2026</span><br><span class="exact">exact — reported OCC receipt date; comment period ran to 3/20/26 (<a href="https://www.ledgerinsights.com/morgan-stanley-files-for-national-trust-bank-charter-dedicated-to-digital-assets/">Ledger Insights</a>)</span></td>
+    <td>Filed 2/18/26 → conditional <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1378.pdf">June 18, 2026 (CD #1378)</a>.</td>
+    <td><span class="badge b-cond">Conditional</span></td>
+    <td class="road">No application-specific opposition found. <a href="https://www.americanbanker.com/news/morgan-stanley-gets-conditional-approval-for-trust-charter">American Banker</a>; counsel <a href="https://www.davispolk.com/experience/morgan-stanley-preliminary-conditional-approval-national-trust-bank-charter">Davis Polk</a>.
+      <div class="conds"><div class="h">Conditions — per <a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1378.pdf">Corporate Decision #1378</a></div><ul>
+        <li>Activities limited to trust-company activities</li>
+        <li>Compliance with the GENIUS Act and future applicable law</li>
+        <li>60-day notice of significant business-plan deviations</li>
+        <li>Minimum <b>$50M Tier 1 capital</b>, with ≥<b>$25M in eligible liquid assets</b></li>
+        <li>≥180 days of operating expenses in liquid assets</li>
+        <li>OCC prior no-objection for officers/directors; director share-ownership requirement; fidelity bond</li>
+        <li>GAAP accrual-basis financials + independent external audit; BSA/OFAC program</li>
+        <li><b>IT-systems architecture review and pre-opening exam before final approval</b></li>
+      </ul></div></td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Laser Digital</div><div class="ent">Laser Digital National Trust Bank (Nomura-backed; LDNTB)</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li><span class="q">"Digital assets, securities, and fiat currency custody services as a fiduciary, primarily for institutional clients"</span> — only one in the cohort to list traditional securities alongside crypto and fiat. <a href="https://www.occ.treas.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1377.pdf">CD #1377</a></li>
+      <li>Staking as an ancillary custody service <span class="q">"to earn a yield on…digital assets held under custody."</span> <a href="https://www.occ.treas.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1377.pdf">CD #1377</a></li>
+      <li>Customer-directed spot trading — <span class="q">"offered only to custody customers and relate only to custodied assets."</span> <a href="https://www.occ.treas.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1377.pdf">CD #1377</a></li>
+      <li>No stablecoin issuance, FX settlement, tokenization, or deposit-taking (<a href="https://www.bankingdive.com/news/laser-digital-fintech-digital-asset-nomura-national-trust-bank-charter-occ/810768/">Banking Dive</a>). <a href="https://www.occ.treas.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1377.pdf">CD #1377</a></li>
+    </ul></td>
+    <td><span class="date">~late Jan 2026</span><br><span class="approx">APPROX. — verify</span>
+      <span class="whynote"><b>Why unpinned:</b> CD #1377 omits the receipt date; inferred from control number <b>2026-Charter-344710</b> and a Banking Dive announcement ~Jan 28, 2026 (an <i>announcement</i>, not the OCC's receipt). Pull the <a href="https://apps.occ.gov/CAAS_CATS/">CAS</a> record to confirm.</span></td>
+    <td>Filed ~1/28/26 → conditional <a href="https://www.occ.treas.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1377.pdf">May 29, 2026 (CD #1377)</a>.</td>
+    <td><span class="badge b-cond">Conditional</span></td>
+    <td class="road">No application-specific opposition found. <a href="https://www.bankingdive.com/news/laser-digital-fintech-digital-asset-nomura-national-trust-bank-charter-occ/810768/">Banking Dive</a>.
+      <div class="conds"><div class="h">Conditions — per <a href="https://www.occ.treas.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1377.pdf">Corporate Decision #1377</a></div><ul>
+        <li>Activities limited to trust-company activities; <b>must not meet the BHCA "bank" definition</b></li>
+        <li>Compliance with the GENIUS Act</li>
+        <li>60-day notice of significant business-plan deviations</li>
+        <li>Minimum <b>$6.5M Tier 1 capital</b>, ≥<b>$3.25M in eligible liquid assets</b> (first 3 yrs)</li>
+        <li>≥180 days of operating expenses in liquid assets</li>
+        <li>OCC no-objection letters for senior officers/directors before appointment; GAAP financials + annual independent audit</li>
+        <li><b>Citizenship waivers granted for two directors</b> (Steven Ashley, Darren Burnett)</li>
+        <li><b>Approval expires if capital not raised in 12 months / bank not opened in 18 months</b></li>
+      </ul></div></td>
+  </tr>
+
+  </tbody>
+</table>
+</div>
+
+<div class="note">
+  <b>The "five" (OCC News Release 2025-125, Dec 12, 2025).</b> Conditionally approved in one batch: Circle, Ripple (de novo) and BitGo, Fidelity, Paxos (conversions). A structural contrast: <b>Circle and Ripple do not issue a stablecoin at the bank</b> — the bank only manages the reserve "on a directed basis" and acts as collateral trustee, while the affiliated NY trust company issues USDC/RLUSD. <b>BitGo, Fidelity, and Paxos each propose to issue a stablecoin at the bank.</b> Circle has reached final approval (July 10, 2026); the other four remain conditional/pre-opening. Note the capital conditions scale with the business: from ~$6M (Circle, Laser Digital) up to $60M (Coinbase).
+</div>
+
+<!-- PENDING -->
+<h2><span class="dot" style="background:var(--pending)"></span>Pending Review (application filed, no decision yet)</h2>
+<div class="sub" style="margin-bottom:10px;color:var(--faint)">No OCC conditions exist yet for these — conditions are imposed only at (conditional) approval. Receipt dates here are all EXACT, taken from the OCC application document date / licensing index.</div>
+<div class="tablewrap">
+<table>
+  <colgroup><col class="c-co"><col class="c-sub"><col class="c-act"><col class="c-rec"><col class="c-time"><col class="c-stat"><col class="c-road"></colgroup>
+  <thead><tr>
+    <th>Company / entity</th><th>Charter subtype</th><th>Proposed activities (sourced)</th><th>OCC receipt date</th><th>Key dates &amp; status basis</th><th>Status</th><th>Roadblocks · opposition</th>
+  </tr></thead>
+  <tbody>
+
+  <tr>
+    <td><div class="co">World Liberty Financial</div><div class="ent">World Liberty Trust Company, N.A. (WLTC Holdings, LLC)</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Issue <b>USD1</b>, a <span class="q">"fiat-backed digital asset…1-to-1 equivalence to the U.S. dollar,"</span> and manage its reserve (USD deposits, U.S. govt money-market funds, cash equivalents). <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/world-liberty-trust-company.pdf">OCC application</a></li>
+      <li><span class="q">"Digital asset custody services to institutional investors."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/world-liberty-trust-company.pdf">OCC application</a></li>
+      <li>Fiduciary trust powers; <span class="q">"will not grant credit to the public."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/world-liberty-trust-company.pdf">OCC application</a></li>
+    </ul></td>
+    <td><span class="date">Jan 5, 2026</span><br><span class="exact">exact (OCC doc)</span></td>
+    <td>Filed 1/5/26 (announced <a href="https://www.coindesk.com/policy/2026/01/07/trump-linked-world-liberty-financial-applies-for-federal-bank-charter">1/7/26</a>); first NTB app of 2026. Pending.</td>
+    <td><span class="badge b-pending">Pending</span></td>
+    <td class="road"><span class="oppo">Opposition:</span> <a href="https://ncrc.org/ncrcs-comment-on-world-liberty-trust-company-national-trust-bank-charter-application/">NCRC (Feb 9 '26)</a>; <a href="https://www.reed.senate.gov/imo/media/doc/22426lettertooccreworldlibertyfinancial1.pdf">U.S. Senate letter (Sen. Reed et al.)</a> — Trump-family conflict of interest.</td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Payoneer</div><div class="ent">PAYO Digital Bank, N.A.</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Issue &amp; redeem <b>PAYO-USD</b>; <span class="q">"fiduciary management of the reserve assets for PAYO-USD."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/payo-digital-bank-na.pdf">OCC application</a></li>
+      <li>Custody for PAYO-USD, fiat, and <span class="q">"certain third-party stablecoins to facilitate customer transactions."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/payo-digital-bank-na.pdf">OCC application</a></li>
+      <li>Process U.S. payments via traditional rails; convert stablecoin balances into local currencies; "permitted payment stablecoin issuer" under the GENIUS Act. <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/payo-digital-bank-na.pdf">OCC application</a></li>
+    </ul></td>
+    <td><span class="date">Feb 23, 2026</span><br><span class="exact">exact (OCC doc)</span></td>
+    <td>Filed 2/23/26 (announced <a href="https://www.bankingdive.com/news/payoneer-applies-occ-national-trust-bank-charter-bridge/813092/">2/24/26</a>). Pending.</td>
+    <td><span class="badge b-pending">Pending</span></td>
+    <td class="road"><span class="flag">Heavily opposed:</span> <a href="https://www.icba.org/w/objection-to-national-trust-charter-application-for-payo-digital-bank">ICBA (Mar 30)</a>, <a href="https://bpi.com/wp-content/uploads/2026/04/BPI-comment-re-PAYO-NTB-Application-3-27-26.pdf">BPI (Mar 27)</a>, <a href="https://ncrc.org/ncrc-letter-in-opposition-to-the-formation-of-payo-digital-bank/">NCRC</a>.</td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Zerohash</div><div class="ent">Zerohash National Trust Bank</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Broadest activity list of the pending group: <span class="q">"custody over digital assets, fiat currency, and other assets; custodial staking and validation; transfer agent services; trade execution; stablecoin management; and settlement, clearing, and escrow services."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/zerohash-national-trust-bank.pdf">OCC application</a></li>
+      <li>Trust-company model with custody + full fiduciary powers <span class="q">"rather than consumer banking"</span>; B2B2C infrastructure. <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/zerohash-national-trust-bank.pdf">OCC application</a></li>
+    </ul></td>
+    <td><span class="date">Feb 27, 2026</span><br><span class="exact">exact (OCC doc)</span></td>
+    <td>Filed 2/27/26 (announced <a href="https://www.coindesk.com/policy/2026/03/05/zerohash-applies-for-national-trust-bank-charter-to-expand-regulated-stablecoin-services">Mar 4–5</a>). Pending.</td>
+    <td><span class="badge b-pending">Pending</span></td>
+    <td class="road"><span class="oppo">Opposition:</span> <a href="https://www.icba.org/w/objection-to-zerohash-charter-application">ICBA (Apr 1)</a> — reject/defer pending fuller disclosure + third-party verification of risk systems.</td>
+  </tr>
+
+  <tr>
+    <td><div class="co">EDX Markets</div><div class="ent">EDX Trust, N.A. (App. 2026-Charter-345391)</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Custody of digital assets, cash &amp; stablecoins <span class="q">"on a fiduciary basis"</span>; custodied cash invested in liquid assets at ~fed-funds rate; custodied assets may be <span class="q">"staked or otherwise used in permissible yield-generating activities."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/edx-trust.pdf">OCC application</a></li>
+      <li>Facilitate customer trading <span class="q">"on a riskless principal basis"</span> on EDX Markets/OTC; net end-of-day settlement. <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/edx-trust.pdf">OCC application</a></li>
+      <li>Fiduciary asset management; institutional customers only (broker-dealers, FCMs, RIAs). <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/edx-trust.pdf">OCC application</a></li>
+    </ul></td>
+    <td><span class="date">Mar 26, 2026</span><br><span class="exact">exact (OCC doc)</span></td>
+    <td>Filed 3/26/26 (letters dated 3/25). Comment period closed; pending.</td>
+    <td><span class="badge b-pending">Pending</span></td>
+    <td class="road"><span class="flag">Contested:</span> <a href="https://bpi.com/wp-content/uploads/2026/04/BPI-comment-re-EDX-NTB-Application-4-27-26.pdf">BPI (Apr 27)</a> (exceeds OCC authority — not "predominantly" fiduciary); <a href="https://www.icba.org/w/letter-objecting-to-the-national-trust-bank-charter-application-of-edx-trust">ICBA (Apr 27)</a>.</td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Bastion</div><div class="ent">Bastion Platforms National Trust Company</div></td>
+    <td><span class="sub-tag sub-conv">Conversion — NY (NYDFS)</span></td>
+    <td><ul class="acts">
+      <li><b>White-label stablecoin issuance platform</b> — the charter <span class="q">"allows other entities to issue their own stablecoins using Bastion's infrastructure"</span> (issuance, custody, movement, conversion, reserve management). <a href="https://www.americanbanker.com/news/bastion-platforms-seeks-to-convert-its-state-trust-charter">American Banker</a></li>
+      <li>Enterprise/institutional target; named sole issuance provider for a <a href="https://www.globenewswire.com/news-release/2025/12/01/3197011/0/en/Bastion-Named-Sole-Issuance-Provider-for-Sony-Bank-Stablecoin-Initiative.html">Sony Bank stablecoin initiative</a>.</li>
+      <li><span class="srcnote warn">No public OCC application — as a conversion it was not posted for comment; activity detail is secondary-sourced, unverified against a primary OCC filing.</span></li>
+    </ul></td>
+    <td><span class="date">Mar 30, 2026</span><br><span class="exact">exact (OCC index)</span></td>
+    <td>Filed 3/30/26. Converting from NY trust (charter obtained Feb 2025). Pending.</td>
+    <td><span class="badge b-pending">Pending</span></td>
+    <td class="road">No opposition located — as a <b>conversion</b>, not posted for public comment. <a href="https://www.americanbanker.com/news/bastion-platforms-seeks-to-convert-its-state-trust-charter">American Banker</a>.</td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Lorum</div><div class="ent">Lorum National Trust Bank, N.A. (Lorum Group Holdings; formerly "Fuse")</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Institutional clearing/settlement for <span class="q">"USD and tokenized assets, including stablecoins and tokenized money market funds,"</span> via named-account custody to <span class="q">"reduce nesting risk."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/public-comment/lorum-national-trust-bank.pdf">OCC application</a></li>
+      <li>Both non-fiduciary (named / client-money accounts) and fiduciary (escrow) custody. <a href="https://www.occ.gov/topics/charters-and-licensing/public-comment/lorum-national-trust-bank.pdf">OCC application</a></li>
+      <li>FX and fixed-income/treasury management incl. tokenized assets. <span class="q">"Will not engage in lending"</span>; institutional-only. <a href="https://www.occ.gov/topics/charters-and-licensing/public-comment/lorum-national-trust-bank.pdf">OCC application</a></li>
+    </ul></td>
+    <td><span class="date">Mar 31, 2026</span><br><span class="exact">exact (OCC index)</span></td>
+    <td>Filed 3/31/26; posted for review week of 4/7/26. Pending.</td>
+    <td><span class="badge b-pending">Pending</span></td>
+    <td class="road">No opposition located — its non-crypto interbank-clearing model has drawn less scrutiny. <a href="https://www.bankingdive.com/news/cash-management-platform-applies-national-trust-charter/816851/">Banking Dive</a>.</td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Agora Finance</div><div class="ent">Agora National Trust Bank (App. 2026-Charter-345708)</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li>Core three-pronged model (application language quoted in BPI's letter): services <span class="q">"primarily relating to digital asset custody, digital asset investment advisory, and stablecoin issuance."</span> <a href="https://bpi.com/wp-content/uploads/2026/05/BPI-Comment-re-Agora-NTB-Application-5-20-26.pdf">BPI letter</a></li>
+      <li><b>AUSD</b> stablecoin backed 100% by reserves (cash, overnight repo, short-term Treasuries; manager Van Eck); "instant liquidity" mint against USDC/USDT. <a href="https://bpi.com/wp-content/uploads/2026/05/BPI-Comment-re-Agora-NTB-Application-5-20-26.pdf">BPI letter</a></li>
+      <li>Settlement infrastructure, treasury management, fiat connectivity — institutional focus. <a href="https://www.agora.finance/blog/occ-national-trust-bank-charter">Agora</a></li>
+    </ul></td>
+    <td><span class="date">Apr 20, 2026</span><br><span class="exact">exact (OCC doc)</span></td>
+    <td>Filed 4/20/26 (announced ~4/24). Open for comment; pending.</td>
+    <td><span class="badge b-pending">Pending</span></td>
+    <td class="road"><span class="flag">Contested:</span> <a href="https://www.independentbanker.org/w/icba-opposes-agora-s-application-for-national-trust-bank-charter">ICBA (May 21)</a>; <a href="https://bpi.com/wp-content/uploads/2026/05/BPI-Comment-re-Agora-NTB-Application-5-20-26.pdf">BPI (May 20)</a> — flags affiliate-customer concentration, 23A/23B concerns.</td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Kraken</div><div class="ent">Payward National Trust Company (Payward, Inc.)</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li><span class="q">"Custody services for digital assets, including safekeeping, recordkeeping, and settlement services,"</span> for institutional and eligible individual clients. <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/payward-national-trust-company.pdf">OCC application</a></li>
+      <li>Custody + fiduciary services (national-trust-bank fiduciary powers). <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/payward-national-trust-company.pdf">OCC application</a></li>
+      <li>Cash management via a third-party bank; delivered directly or via a Payward affiliate. (Tokenized-equities "xStocks" is an <b>affiliate</b> product, not a bank activity.) <b>No stablecoin issuance and no investment advisory.</b> <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/payward-national-trust-company.pdf">OCC application</a></li>
+    </ul></td>
+    <td><span class="date">May 8, 2026</span><br><span class="exact">exact (OCC doc)</span></td>
+    <td>Filed 5/8/26. Pending.</td>
+    <td><span class="badge b-pending">Pending</span></td>
+    <td class="road"><span class="flag">Most contested:</span> <a href="https://www.icba.org/w/icba-raises-concerns-over-kraken-pursuit-of-national-trust-charter">ICBA (May 11)</a> urges OCC to <b>pause</b> and rescind Interpretive Letter #1176; <a href="https://www.ncrc.org/ncrc-opposes-kraken-application-for-a-national-trust-bank-charter/">NCRC (June 9)</a>. <a href="https://www.americanbanker.com/news/icba-urges-occ-to-halt-kraken-parents-trust-charter-bid">American Banker</a>.</td>
+  </tr>
+
+  <tr>
+    <td><div class="co">Catena Labs</div><div class="ent">Catena Trust Bank, N.A. (founder: Circle co-founder Sean Neville)</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li><span class="q">"Custody, investment management, trust, conversion and clearing, and execution services for fiat currency, investment securities, and digital assets."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/catena-trust-bank-na.pdf">OCC application</a></li>
+      <li>Handles <span class="q">"payment stablecoins compliant with the GENIUS Act…and other approved digital assets."</span> <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/catena-trust-bank-na.pdf">OCC application</a></li>
+      <li>AI-native <span class="q">"agentic finance"</span> — trust, compliance &amp; settlement infrastructure for AI agents; nationwide via APIs. <a href="https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/catena-trust-bank-na.pdf">OCC application</a></li>
+    </ul></td>
+    <td><span class="date">May 18, 2026</span><br><span class="exact">exact (OCC doc)</span></td>
+    <td>Filed 5/18/26 (with a $30M Series A). Pending.</td>
+    <td><span class="badge b-pending">Pending</span></td>
+    <td class="road">No dedicated opposition letter, but <b>name-checked</b> in <a href="https://www.independentbanker.org/w/icba-opposes-agora-s-application-for-national-trust-bank-charter">ICBA's Agora opposition</a> as another crypto/AI applicant.</td>
+  </tr>
+
+  </tbody>
+</table>
+</div>
+
+<!-- DENIED -->
+<h2><span class="dot" style="background:var(--denied)"></span>Denied</h2>
+<div class="tablewrap">
+<table>
+  <colgroup><col class="c-co"><col class="c-sub"><col class="c-act"><col class="c-rec"><col class="c-time"><col class="c-stat"><col class="c-road"></colgroup>
+  <thead><tr>
+    <th>Company / entity</th><th>Charter subtype</th><th>Proposed activities (sourced)</th><th>OCC receipt date</th><th>Key dates &amp; decision</th><th>Status</th><th>Grounds · roadblocks</th>
+  </tr></thead>
+  <tbody>
+  <tr>
+    <td><div class="co">Wise</div><div class="ent">Wise National Trust, N.A. (Wise US Inc.; App. 2025-Charter-342106)</div></td>
+    <td><span class="sub-tag">De novo NTB</span></td>
+    <td><ul class="acts">
+      <li><b>Multicurrency accounts</b> for U.S. customers — hold/manage funds in various currencies + cross-currency transfers. <a href="https://bpi.com/wp-content/uploads/2025/10/BPI-comment-letter-re-OCC-NTB-application-re-Wise-Trust-Company-10-14-25.pdf">BPI letter</a></li>
+      <li>Payment processing — issue access devices on transaction accounts; obtain Fedwire/ACH via a <b>direct Fed master account</b>. <a href="https://www.icba.org/documents/d/asset-library-45247/icba-objection-to-wise-national-trust-application">ICBA</a></li>
+      <li>Fiduciary services to customers and Wise affiliates (nondepository national trust bank). <a href="https://www.icba.org/documents/d/asset-library-45247/icba-objection-to-wise-national-trust-application">ICBA</a></li>
+      <li><span class="warn">Crypto/stablecoin "interoperability" was Wise/press framing, not in the formal application</span> — ICBA and BPI note it wasn't mentioned. <a href="https://thedefiant.io/converge/tradfi-and-fintech/occ-denies-wise-s-us-national-trust-bank-charter">The Defiant</a></li>
+    </ul></td>
+    <td><span class="date">June 16, 2025</span><br><span class="exact">exact — from OCC CAS record, Filing ID 342106 (<a href="https://apps.occ.gov/CAAS_CATS/CAAS_Details.aspx?FilingTypeID=2&FilingID=342106&FilingSubtypeID=1104">CAS</a>)</span></td>
+    <td>Filed 6/16/25 → <b><a href="https://www.pymnts.com/legal/2026/wise-prepares-second-us-bank-charter-bid-after-occ-rejection/">denial letter July 21, 2026</a></b>; disclosed via SEC 6-K ~7/23, RNS 7/24. No standalone OCC press release.</td>
+    <td><span class="badge b-denied">Denied</span></td>
+    <td class="road"><span class="flag">Denied on AML/BSA/CFT grounds:</span> unaddressed "key deficiencies" in the AML/CFT program; board/management lacked sufficient AML and fiduciary-banking competence. OCC referenced Wise's <a href="https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20250709">$4.2M multistate AML settlement</a> (context, not controlling). Bank groups argued the multicurrency accounts were de facto deposits — <b>OCC did not rest its denial on that</b>. <b>Wise plans to refile</b> under a GENIUS Act framework (<a href="https://www.stocktitan.net/sec-filings/WSE/6-k-wise-group-plc-current-report-foreign-issuer-4bcb57bdcd22.html">SEC 6-K</a>). <a href="https://www.law360.com/publicpolicy/articles/2505228">Law360</a>.</td>
+  </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- CONTEXT -->
+<h2><span class="dot" style="background:var(--denovo)"></span>Related context — fintech <i style="font-weight:400;color:var(--muted);margin-left:4px">de novo / full-service / industrial</i> bank applicants (NOT trust charters)</h2>
+<div class="sub" style="margin-bottom:12px">Included because you flagged some by name. These pursue <b>full-service or industrial bank charters</b> (permitting lending and deposit-taking) — a different track from the trust charter. <b>Klarna</b> filed for a <b>Utah industrial bank (ILC)</b> with the FDIC and Utah regulator, not an OCC national or trust charter.</div>
+<div class="tablewrap">
+<table>
+  <colgroup><col class="c-co"><col class="c-sub"><col class="c-act"><col class="c-rec"><col class="c-time"><col class="c-stat"><col class="c-road"></colgroup>
+  <thead><tr>
+    <th>Company</th><th>Charter type</th><th>Proposed activities (sourced)</th><th>Filed / decided</th><th>Regulator &amp; basis</th><th>Status</th><th>Source</th>
+  </tr></thead>
+  <tbody>
+  <tr>
+    <td><div class="co">Nubank</div></td>
+    <td><span class="sub-tag" style="border-color:rgba(155,140,206,.4);color:var(--denovo)">De novo full bank</span></td>
+    <td class="road">Deposit accounts, credit cards, lending, and digital-asset (crypto) custody. <span class="srcnote">Exact crypto conditions not in a primary OCC document.</span></td>
+    <td><span class="date">~Jan 29, 2026</span><br><span class="approx">approx. day</span></td>
+    <td>OCC — conditional</td>
+    <td><span class="badge b-denovo">Conditional</span></td>
+    <td class="road"><a href="https://www.bankingdive.com/news/nubank-gets-conditional-occ-approval-charter/810981/">Banking Dive</a> · <a href="https://international.nubank.com.br/company/nu-secures-approval-to-establish-us-national-bank/">Nu PR</a></td>
+  </tr>
+  <tr>
+    <td><div class="co">Klarna</div></td>
+    <td><span class="sub-tag sub-conv">Utah industrial bank (ILC)</span></td>
+    <td class="road">Bring payments, savings/deposit accounts, credit/BNPL lending, and merchant services in-house (replacing sponsor bank WebBank).</td>
+    <td><span class="date">July 6, 2026</span><br><span class="exact">exact</span></td>
+    <td><b>FDIC + Utah DFI</b> — not OCC, not trust</td>
+    <td><span class="badge b-denovo">Pending</span></td>
+    <td class="road"><a href="https://www.americanbanker.com/payments/news/klarna-applies-for-bank-charter-with-fdic-and-utah-regulator">American Banker</a> · <a href="https://www.cnbc.com/2026/07/06/klarna-seeks-us-bank-charter-in-push-beyond-buy-now-pay-later.html">CNBC</a></td>
+  </tr>
+  <tr>
+    <td><div class="co">Revolut</div></td>
+    <td><span class="sub-tag" style="border-color:rgba(155,140,206,.4);color:var(--denovo)">De novo full bank</span></td>
+    <td class="road">FDIC-insured checking/savings offered directly; proprietary credit/lending; super-app with stock trading &amp; digital assets; direct Fedwire/ACH.</td>
+    <td><span class="date">Mar 5, 2026</span><br><span class="exact">exact</span></td>
+    <td>OCC + FDIC — under review</td>
+    <td><span class="badge b-denovo">Pending</span></td>
+    <td class="road"><a href="https://financefeeds.com/revolut-files-for-national-bank-charter-to-launch-full-scale-u-s-operations/">FinanceFeeds</a> · <a href="https://www.bankingdive.com/news/revolut-applies-for-occ-charter/813922/">Banking Dive</a></td>
+  </tr>
+  <tr>
+    <td><div class="co">Mercury</div></td>
+    <td><span class="sub-tag" style="border-color:rgba(155,140,206,.4);color:var(--denovo)">De novo full bank</span></td>
+    <td class="road">Add Zelle, expanded business/consumer lending, and owned payment infrastructure (from partner banks Choice, Column).</td>
+    <td><span class="date">Apr 27, 2026</span><br><span class="exact">approved (applied Dec '25)</span></td>
+    <td>OCC — conditional (<a href="https://www.occ.gov/topics/charters-and-licensing/interpretations-and-decisions/2026/cd1372.pdf">CD #1372</a>)</td>
+    <td><span class="badge b-denovo">Conditional</span></td>
+    <td class="road"><a href="https://www.businesswire.com/news/home/20260427949683/en/Mercury-Receives-OCC-Conditional-Approval-to-Establish-Mercury-Bank-N.A.">Mercury PR</a></td>
+  </tr>
+  <tr>
+    <td><div class="co">Others in the wave</div></td>
+    <td><span class="sub-tag">Various</span></td>
+    <td colspan="4" class="road" style="vertical-align:middle">Erebor, Augustus, VALT, Upstart, Bunq (US), Mission Lane (CEBA credit-card bank), OpenReserve — spanning crypto-focused banking, AI lending, and tokenized deposits; filed / conditionally approved late 2025–2026.</td>
+    <td class="road" style="vertical-align:middle"><a href="https://www.americanbanker.com/news/fintechs-asking-for-and-receiving-bank-charters-in-2026">American Banker roundup</a></td>
+  </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="note">
+  <b>Cross-cutting roadblocks worth watching.</b> Two structural headwinds cut across the pipeline: (1) the <b>Federal Reserve's May 2026 pause</b> on master-account access for uninsured national trust banks — cited by Wise as making its original model non-viable; and (2) an organized opposition campaign by <a href="https://www.independentbanker.org/w/icba-urges-occ-to-pause-approvals-of-national-trust-bank-charter-applications">ICBA (urging the OCC to pause all NTB approvals)</a>, the <a href="https://bpi.com/bpi-statement-on-occs-conditional-approval-of-five-national-trust-bank-charter-applications/">Bank Policy Institute</a>, and NCRC, all challenging the OCC's statutory authority to charter uninsured, non-fiduciary crypto trust banks outside the Bank Holding Company Act framework.
+</div>
+
+<footer>
+  <p><b>Method &amp; sourcing.</b> Proposed-activities points and conditions are quoted or paraphrased from each entity's OCC materials: for the approved/conditional cohort, the OCC decision letters (News Release 2025-125 letters a–e; Corporate Decisions #1365 Bridge, #1367 Foris DAX/Crypto.com, #1370 Coinbase, #1372 Mercury, #1377 Laser Digital, #1378 Morgan Stanley); for pending applicants, the OCC application public volumes / public-comment filings (and, where the business plan is confidential, the BPI comment letter that quotes it — noted inline for Agora and Bastion). Dates and status are additionally sourced to the OCC Digital Assets Licensing Applications index and the OCC Corporate Applications Search (CAS/CATS), plus reputable press and company filings. Each cell links its sources.</p>
+  <p style="margin-top:10px"><b>Why four receipt dates are APPROX.</b> OCC decision letters state the decision date and control number but usually not the receipt date; a firm date needs the OCC "Date Received" index, the application document's date, or a letter reciting "On [date]…filed." For <b>Fidelity</b> (letter omits the filing-date line; no public volume; the biggest gap), <b>Crypto.com/Foris DAX</b> (~Oct 2025, from control # 2025-Charter-343659 + comment timing), <b>Stripe/Bridge</b> (~Oct 15, 2025, from a co-founder announcement + docket OCC-2025-0603), and <b>Laser Digital</b> (~late Jan 2026, from control # 2026-Charter-344710 + announcement), no such source is public. Each can be pinned exactly via that applicant's OCC Corporate Applications Search (CAS) record by filing ID, or the OCC weekly bulletin "applications received" listing — both query interfaces rather than static pages.</p>
+  <p style="margin-top:10px"><b>Conditions note.</b> All approved/conditional entries are OCC <i>preliminary conditional</i> approvals; the conditions listed are the material ones from each decision letter (capital minimums, liquid-asset floors, 180-day expense reserves, BSA/AML programs, senior-officer vetting, GENIUS-Act conformance, and — for several — a 12-month capital / 18-month opening expiry). The letters contain additional standard pre-opening requirements not all itemized here; the linked letter is authoritative. Pending applicants have no conditions yet — those attach only at approval.</p>
+</footer>
+
+</div>
+</body>
+</html>

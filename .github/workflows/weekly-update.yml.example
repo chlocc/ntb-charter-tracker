@@ -1,0 +1,41 @@
+# OPTIONAL: automated weekly update via Claude Code in CI.
+# This file is a TEMPLATE and will NOT run until you rename it to `weekly-update.yml`.
+# Before enabling: add a repository secret named ANTHROPIC_API_KEY (Settings -> Secrets and
+# variables -> Actions). API usage is billed to that key. Runs even when your laptop is off.
+
+name: Weekly NTB tracker update
+
+on:
+  schedule:
+    - cron: '0 12 * * 1'   # Mondays 12:00 UTC (~8am ET)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run the update
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          claude -p "/update-tracker" --permission-mode acceptEdits
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name  "ntb-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git add -A
+            git commit -m "Weekly NTB tracker update ($(date -u +%Y-%m-%d))"
+            git push
+          else
+            echo "No changes this week."
+          fi
