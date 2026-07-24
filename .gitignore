@@ -2,3 +2,7 @@
 node_modules/
 *.log
 .claude/settings.local.json
+
+# Plaintext sources — kept local only, never published (index.html is the encrypted build)
+index.source.html
+data/applicants.md
