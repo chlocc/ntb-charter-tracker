@@ -1,0 +1,16 @@
+# Changelog
+
+## 2026-07-27
+
+- **New entrant added: Sony / Connectia Trust, National Association.** Sony Bank secured preliminary conditional approval (CD #1380, "July 2026"; press-reported ~July 7–8) for a de novo national trust bank to issue and manage a USD-denominated stablecoin, plus non-fiduciary custody. Capitalized at $40M. Receipt date is APPROX (~Oct 2025, press only — the OCC decision letter text wasn't machine-readable this pass). Opposition from BPI (banking/commerce separation) and ICBA (Nov 2025). [CoinDesk](https://www.coindesk.com/business/2026/07/09/sony-secures-conditional-approval-to-set-up-u-s-stablecoin-trust-bank) · [Banking Dive](https://www.bankingdive.com/news/occ-conditional-approve-sony-trust-bank-charter/824673/) · [BPI opposition](https://bpi.com/bpi-opposes-occs-consideration-of-connectia-trusts-application-for-a-national-trust-bank-charter/)
+- **Two receipt-date corrections**, verified against the OCC's own "Date Received" index rather than application public-volume dates:
+  - World Liberty Financial: Jan 5, 2026 → **Jan 6, 2026**.
+  - Zerohash: Feb 27, 2026 → **Mar 2, 2026**.
+  [OCC Digital Assets Licensing Applications index](https://www.occ.gov/topics/charters-and-licensing/digital-assets-licensing-applications/index-digital-assets-licensing-applications.html)
+- **Related-context additions** (not trust charters — full-service/conversion, tracked for context only): **OpenReserve Bank, N.A.** (Salt Lake City de novo full bank, filed 2026-04-13, planning a "ReserveUSD" GENIUS Act stablecoin subsidiary) and **CBW Bank** (Kansas state bank → national charter conversion for a fintech/BaaS sponsor-bank digital-asset expansion, filed 2026-06-26). [American Banker: fintech charters roundup](https://www.americanbanker.com/news/fintechs-asking-for-and-receiving-bank-charters-in-2026) · [American Banker: CBW conversion](https://www.americanbanker.com/news/cbw-bank-applies-to-occ-for-bank-charter-conversion)
+- **No status changes** among the nine previously-Pending trust-charter applicants (World Liberty, Payoneer, Zerohash, EDX Markets, Bastion, Lorum, Agora Finance, Kraken/Payward, Catena Labs) — all remain Pending, confirmed against the OCC index and press as of this run.
+- **Cross-cutting updates:**
+  - Federal Reserve's "payment account" (skinny master account) NPRM comment period closed **2026-07-27**; final guidance still pending. Master-account approvals remain effectively paused for uninsured NTBs.
+  - GENIUS Act's statutory July 18, 2026 deadline for final implementing rules was **missed**; OCC's BSA/AML/sanctions NPRM and a related interagency CIP proposal remain open for comment through **2026-08-21**.
+- **Reviewed and excluded as out of scope:** Interactive National Trust Bank (CD #1373, an Interactive Brokers Group subsidiary) — proposes fiduciary custody for mutual funds/ETFs, not digital-asset activity, so it falls outside this tracker's NTB/digital-asset focus.
+- **Flagged, unverified:** "The First National Bank of Cooper" appeared on the OCC Digital Assets Licensing Applications index with a 2026-07-08 receipt date. Could not confirm the nature of the application from public sources this pass — carry forward to next update.
