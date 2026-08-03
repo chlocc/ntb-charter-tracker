@@ -6,3 +6,6 @@ node_modules/
 # Plaintext sources — kept local only, never published (index.html is the encrypted build)
 index.source.html
 data/applicants.md
+
+# Verification audit — local only (contains full roster + source extracts)
+audit/
