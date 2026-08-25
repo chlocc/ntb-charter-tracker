@@ -10,8 +10,12 @@
  *   NTB_PASSWORD='yourpassword' node encrypt.js
  *   node encrypt.js --password yourpassword
  *
- * Input:  index.source.html   (plaintext — keep this gitignored / local only)
- * Output: index.html          (encrypted loader — safe to publish)
+ *   Optional: --in <plaintext> --out <encrypted> --label "<gate heading>"
+ *   e.g. NTB_PASSWORD=... node encrypt.js \
+ *          --in audit/provenance.html --out provenance.html --label "NTB Source Provenance Audit"
+ *
+ * Input:  index.source.html   (default; plaintext — keep gitignored / local only)
+ * Output: index.html          (default; encrypted loader — safe to publish)
  *
  * The password is NEVER written into any committed file.
  */
@@ -20,8 +24,13 @@ const path = require('path');
 const crypto = require('crypto');
 
 const ITERATIONS = 250000;
-const SRC = path.join(__dirname, 'index.source.html');
-const OUT = path.join(__dirname, 'index.html');
+function argVal(flag, dflt) {
+  const i = process.argv.indexOf(flag);
+  return (i !== -1 && process.argv[i + 1]) ? process.argv[i + 1] : dflt;
+}
+const SRC = path.resolve(__dirname, argVal('--in', 'index.source.html'));
+const OUT = path.resolve(__dirname, argVal('--out', 'index.html'));
+const LABEL = argVal('--label', 'NTB Charter Tracker');
 
 function getPassword() {
   const argIdx = process.argv.indexOf('--password');
@@ -56,7 +65,7 @@ const out = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Protected — NTB Charter Tracker</title>
+<title>Protected — ${LABEL}</title>
 <style>
   :root{ --bg:#0f1419; --panel:#161c24; --line:#2a3644; --ink:#e8edf2; --muted:#9aa7b4; --link:#5cb3e8; --err:#e0655f; }
   *{box-sizing:border-box;}
@@ -84,7 +93,7 @@ const out = `<!DOCTYPE html>
   <div class="card">
     <div class="lock">🔒</div>
     <h1>Protected page</h1>
-    <p>This page is password protected. Enter the password to view the NTB Charter Tracker.</p>
+    <p>This page is password protected. Enter the password to view the ${LABEL}.</p>
     <form id="f">
       <input id="pw" type="password" placeholder="Password" autocomplete="current-password" autofocus>
       <button id="go" type="submit">Unlock</button>
